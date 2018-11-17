@@ -3,12 +3,14 @@ const Order = require('./model');
 const createOrder = function (req, res, next) {
   const {
     userId,
+    restaurantId,
     items,
     totalCost
   } = req.body;
 
   const order = new Order({
     userId,
+    restaurantId,
     items,
     totalCost
   });
@@ -23,14 +25,17 @@ const createOrder = function (req, res, next) {
     });
 };
 
-const getOrderByUser = function (req, res, next) {
+const getOrderByUserOrRestaurant = function (req, res, next) {
   const {
     userId,
+    restaurantId
   } = req.query;
 
-  Order
+  if(userId && restaurantId){
+    Order
     .find({
-      userId,
+        userId, 
+        restaurantId,
     })
     .exec()
     .then((orders) => {
@@ -39,9 +44,37 @@ const getOrderByUser = function (req, res, next) {
       });
     })
     .catch(e => next(e));
+  }
+  else if(userId){
+    Order
+    .find({
+        userId, 
+    })
+    .exec()
+    .then((orders) => {
+      res.json({
+        orders
+      });
+    })
+    .catch(e => next(e));
+  }
+  else if(restaurantId){
+    Order
+    .find({
+        restaurantId,
+    })
+    .exec()
+    .then((orders) => {
+      res.json({
+        orders
+      });
+    })
+    .catch(e => next(e));
+  }
+
 };
 
 module.exports = {
   createOrder,
-  getOrderByUser,
+  getOrderByUserOrRestaurant,
 };
