@@ -33,6 +33,7 @@ const getRestaurantsByType = function (req, res, next) {
 const getAllRestaurants = function (req, res, next) {
   const {
     id,
+    name,
   } = req.query;
   
   if (id) {
@@ -42,7 +43,18 @@ const getAllRestaurants = function (req, res, next) {
       .exec()
       .then(restaurants => res.json(restaurants))
       .catch(e => next(e));
-  } else {
+  }
+  else if(name){
+    Restaurant
+      .find({
+        name:{'$regex' : name, '$options' : 'i'}
+      })
+      .populate('foods.food')
+      .exec()
+      .then(restaurants => res.json(restaurants))
+      .catch(e => next(e));
+  }
+   else {
     Restaurant
       .find()
       .populate('foods.food')
