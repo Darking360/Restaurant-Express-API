@@ -25,7 +25,7 @@ module.exports = function (passport) {
   );
 
   /* Delete a restaurant */
-  Router.delete('/',
+  Router.delete('/:id',
     // passport.authenticate('jwt', { session: false }),
     // Authorization.roleAuthorization(['admin']),
     RestaurantController.deleteRestaurant

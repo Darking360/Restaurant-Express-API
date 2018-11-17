@@ -74,7 +74,7 @@ const createRestaurant = function (req, res, next) {
 const deleteRestaurant = function (req, res, next) {
   const {
     id,
-  } = req.body;
+  } = req.params;
 
   Restaurant
     .findByIdAndRemove(id)
