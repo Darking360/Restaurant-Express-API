@@ -16,7 +16,14 @@ const getRestaurantsByType = function (req, res, next) {
     .exec()
     .then(restaurants => {
       // returns all restaurants id, name and details
-      res.json(map(restaurants, restaurant => pick(restaurant, ['_id', 'name', 'details', 'foods'])));
+      let rests = [];
+      restaurants.forEach( restaurant => {
+        const food = restaurant.foods.find( food => food._doc.type === type )
+        if(food){
+          rests.push(pick(restaurant, ['_id', 'name', 'details', 'foods']))
+        }
+      })
+      res.json(rests)
     })
     .catch(e => next(e));
 };
