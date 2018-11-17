@@ -7,6 +7,9 @@ const createOrder = function (req, res, next) {
     totalCost
   } = req.body;
 
+  consoe.log('Llega auth token ---->')
+  console.log(req.user)
+
   const order = new Order({
     userId,
     items,

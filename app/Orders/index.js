@@ -10,7 +10,7 @@ module.exports = function (passport) {
       Authorization.roleAuthorization(['user']),
       OrderController.createOrder
     );
-  
+
   Router
     .get(
       '/',
@@ -18,6 +18,6 @@ module.exports = function (passport) {
       Authorization.roleAuthorization(['user']),
       OrderController.getOrderByUser
     );
-  
+
   return Router;
 };
