@@ -38,6 +38,12 @@ module.exports = function (passport) {
     RestaurantController.addFoodToRestaurant
   );
 
+  Router.patch('/:restaurantId',
+    // passport.authenticate('jwt', { session: false }),
+    // Authorization.roleAuthorization(['admin']),
+    RestaurantController.updateRestaurantById
+  );
+
   /* Changes a food in a restaurant to the given state (In stock or Out of stock) */
 
   return Router;

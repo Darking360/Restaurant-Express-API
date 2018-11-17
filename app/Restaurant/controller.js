@@ -133,10 +133,24 @@ const addFoodToRestaurant = function (req, res, next) {
   
 };
 
+const updateRestaurantById = function (req, res, next) {
+  const {
+    restaurantId,
+  } = req.params;
+
+  Restaurant
+    .findByIdAndUpdate(restaurantId, req.body, {new: true})
+    .exec()
+    .then(restaurant => res.json(restaurant))
+    .catch(err => next(err));
+
+};
+
 module.exports = {
   createRestaurant,
   getAllRestaurants,
   getRestaurantsByType,
   deleteRestaurant,
   addFoodToRestaurant,
+  updateRestaurantById,
 };

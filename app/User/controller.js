@@ -95,7 +95,7 @@ const updateUserById = function (req, res, next) {
   } = req.params;
 
   User
-    .findByIdAndUpdate(userId, req.body)
+    .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
     .then(user => res.json(user))
     .catch(err => next(err));
