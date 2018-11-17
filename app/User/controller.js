@@ -89,9 +89,23 @@ const login = function (passport) {
   
 };
 
+const updateUserById = function (req, res, next) {
+  const {
+    userId,
+  } = req.params;
+
+  User
+    .findByIdAndUpdate(userId, req.body)
+    .exec()
+    .then(user => res.json(user))
+    .catch(err => next(err));
+
+};
+
 module.exports = {
   register,
   getUsers,
   deleteUserById,
   login,
+  updateUserById
 };
