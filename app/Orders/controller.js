@@ -28,7 +28,8 @@ const createOrder = function (req, res, next) {
 const getOrderByUserOrRestaurant = function (req, res, next) {
   const {
     userId,
-    restaurantId
+    restaurantId,
+    status
   } = req.query;
 
   if(userId && restaurantId){
@@ -46,35 +47,82 @@ const getOrderByUserOrRestaurant = function (req, res, next) {
     .catch(e => next(e));
   }
   else if(userId){
-    Order
-    .find({
-        userId, 
-    })
-    .exec()
-    .then((orders) => {
-      res.json({
-        orders
-      });
-    })
-    .catch(e => next(e));
+    if(status){
+      Order
+      .find({
+          userId,
+          status
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+    else{
+      Order
+      .find({
+          userId, 
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
   }
   else if(restaurantId){
-    Order
-    .find({
-        restaurantId,
-    })
-    .exec()
-    .then((orders) => {
-      res.json({
-        orders
-      });
-    })
-    .catch(e => next(e));
+    if(status){
+      Order
+      .find({
+          restaurantId,
+          status
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+    else{
+      Order
+      .find({
+          restaurantId,
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
   }
+
+};
+
+
+const updateOrderById = function (req, res, next) {
+  const {
+    orderId,
+  } = req.params;
+
+  Order
+    .findByIdAndUpdate(orderId, req.body, {new: true})
+    .exec()
+    .then(order => res.json(order))
+    .catch(err => next(err));
 
 };
 
 module.exports = {
   createOrder,
   getOrderByUserOrRestaurant,
+  updateOrderById
 };

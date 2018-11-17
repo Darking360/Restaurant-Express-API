@@ -18,6 +18,15 @@ module.exports = function (passport) {
     //  Authorization.roleAuthorization(['user']),
       OrderController.getOrderByUserOrRestaurant
     );
+
+  Router
+    .patch(
+      '/:orderId',
+   //   passport.authenticate('jwt', { session: false }),
+    //  Authorization.roleAuthorization(['user']),
+      OrderController.updateOrderById
+    );
+
   
   return Router;
 };

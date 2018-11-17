@@ -22,6 +22,11 @@ const Orders = new mongoose.Schema({
   totalCost: {
     type: Number,
     required: true,
+  },
+  status: {
+    type: String,
+    enum: ['seleccionado', 'pedido', 'enviado', 'recibido'],
+    default: 'selecionado',
   }
 });
 
