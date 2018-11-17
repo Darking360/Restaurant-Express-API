@@ -1,4 +1,5 @@
 const Restaurant = require('./model');
+const Food = require('../Food/model');
 const filter = require('lodash/filter');
 const findIndex = require('lodash/findIndex');
 const pick = require('lodash/pick');
@@ -88,13 +89,23 @@ const addFoodToRestaurant = function (req, res, next) {
   const {
     restaurantId,
     foodId,
+    food,
     price,
   } = req.body;
+  let newFood = {};
+  if(food){
+    const { type, name } = food;
+    newFood = new Food({
+      name,
+      type,
+    });
+    newFood.save();
+  }
   Restaurant
     .findByIdAndUpdate(restaurantId, {
       $push: {
         foods: {
-          food: foodId,
+          food: food ? newFood.id : foodId,
           price,
           active: false,
         }
