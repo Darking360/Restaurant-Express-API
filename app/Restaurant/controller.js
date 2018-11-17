@@ -57,12 +57,27 @@ const createRestaurant = function (req, res, next) {
   const {
     name,
     details,
+    foods
   } = req.body;
+
+  let newFoods = [];
+  if(foods){
+    foods.forEach( food => {
+      let newFood = {};
+      const { type, name } = food;
+      newFood = new Food({
+          name,
+          type,
+      });
+      newFoods = newFoods.concat(newFood);
+      newFood.save();
+    })
+  }
 
   const restaurant = new Restaurant({
     name,
     details,
-    foods: [],
+    foods: foods ? newFoods : [],
   });
 
   restaurant
