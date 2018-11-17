@@ -2,13 +2,11 @@ const Order = require('./model');
 
 const createOrder = function (req, res, next) {
   const {
-    userId,
     items,
     totalCost
   } = req.body;
 
-  console.log('Llega auth token ---->')
-  console.log(req.user)
+  const { _id: userId } = req.user;
 
   const order = new Order({
     userId,
