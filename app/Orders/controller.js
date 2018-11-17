@@ -112,9 +112,9 @@ const updateOrderById = function (req, res, next) {
   const {
     orderId,
   } = req.params;
-
+  const body = Object.assign({timestampUpdated: new Date()}, req.body);
   Order
-    .findByIdAndUpdate(orderId, req.body, {new: true})
+    .findByIdAndUpdate(orderId, body, {new: true})
     .exec()
     .then(order => res.json(order))
     .catch(err => next(err));

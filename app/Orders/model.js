@@ -27,6 +27,13 @@ const Orders = new mongoose.Schema({
     type: String,
     enum: ['seleccionado', 'pedido', 'enviado', 'recibido'],
     default: 'selecionado',
+  },
+  timestampCreated:{
+    type: String,
+    default: new Date()
+  },
+  timestampUpdated:{
+    type: String,
   }
 });
 
