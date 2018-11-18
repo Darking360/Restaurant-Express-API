@@ -13,7 +13,7 @@ module.exports = function (passport) {
 
   Router.patch('/update',
     passport.authenticate('jwt', { session: false }),
-    // Authorization.roleAuthorization(['admin']),
+    Authorization.roleAuthorization(['user']),
     UserController.updateUserById
   );
 
