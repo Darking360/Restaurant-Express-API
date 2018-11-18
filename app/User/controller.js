@@ -15,35 +15,48 @@ const register = function (req, res, next) {
   } = req.body;
 
   const hashedPassword = crypto.encrypt(password);
-
-  const user = new User({
-    email,
-    password: hashedPassword,
-    role,
-    address,
-    name,
-    description    
-  });
-
-  user
-    .save()
-    .then((user) => {
-
-      const restaurant = new Restaurant({
-        name: name,
-        details: description,
-        _id: user._id,
+  User.findOne({ email })
+  .exec()
+  .then( user => {
+    if(user){
+      res.status(400).json({
+        message: "Email ya existe. Si olvido contraseña, seleccione opcion para recuperarla",
+        success: false,
+      })
+    }
+    else{
+      const newUser = new User({
+        email,
+        password: hashedPassword,
+        role,
+        address,
+        name,
+        description    
       });
-
-      restaurant
+      newUser
         .save()
+        .then((user) => {
 
-      res.json({
-        user,
-        success: true,
-      });
-    })
-    .catch(e => next(e));
+          if(user.role === 'restaurant'){
+            const restaurant = new Restaurant({
+              name: name,
+              details: description,
+              _id: user._id,
+            });
+
+            restaurant
+              .save()
+          }
+
+          res.json({
+            user,
+            success: true,
+          });
+        })
+        .catch(e => next(e));
+    }
+  })
+  
 };
 
 const getUsers = function (req, res, next) {
@@ -110,44 +123,84 @@ const login = function (passport) {
 
 const updateUserById = function (req, res, next) {
   const { _id: userId } = req.user;
-  let { password } = req.body;
-  password = crypto.encrypt(password);
+  let { password, password } = req.body;
   console.log(req.body)
-  req.body.password = password;
-  User
+  let existingUser = null;
+  if(email){
+    User.findOne({ email })
+    .exec()
+    .then( user => {
+      if(!user){
+        existingUser = user;
+        if(password){
+          password = crypto.encrypt(password);    
+          req.body.password = password;
+        }
+        User
+        .findByIdAndUpdate(userId, req.body, {new: true})
+        .exec()
+        .then(user => res.json(user))
+        .catch(err => next(err));
+        }
+      else{
+        res.status(400).json({
+          message: 'No se puede cambiar al email seleccionado, debido a que ya existe',
+          success: false,
+        })
+      }
+    })
+  }
+  else{
+    if(password){
+      password = crypto.encrypt(password);    
+      req.body.password = password;
+    }
+    User
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
     .then(user => res.json(user))
     .catch(err => next(err));
+  }
 
 };
 
 
 const recoverPsw  = function (req, res, next) {
   const {
-    userId
+    email
   } = req.query;
-  console.log(userId)
-  let password = "123456"
-  let email = null;
-  password = crypto.encrypt(password);
-  User.findByIdAndUpdate(userId, {password})
+  let newPassword = "123456"
+  User.findOne({email})
   .exec()
-  .then( userUpdated => {
-    email = userUpdated.email
-    sgMail.setApiKey('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');
-    const msg = {
-      to: email,
-      from: 'psw@order.com',
-      subject: 'Nueva contraseña',
-      text: 'Su nueva contraseña es ' + password + '',
-      html: '<strong>Su nueva contraseña es ' + password + ', por favor cambiela lo antes posible</strong>',
-    };
-    sgMail.send(msg);
-    return res.json({
-      success: true,
-    });  
+  .then( user => {
+    console.log(user)
+    if(user){
+      user.password = crypto.encrypt(newPassword);
+      user.save()
+      .then( updatedUser => {
+        sgMail.setApiKey('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');
+        const msg = {
+          to: email,
+          from: 'psw@order.com',
+          subject: 'Nueva contraseña',
+          text: 'Su nueva contraseña es ' + newPassword + '',
+          html: '<strong>Su nueva contraseña es ' + newPassword + ', por favor cambiela lo antes posible</strong>',
+        };
+        sgMail.send(msg);
+        return res.json({
+          success: true,
+        });    
+      });
+    }
+    else{
+      res.status(400).json({
+        success: false,
+        message: "Email no se encuentra registrado"
+      })
+    }
   })
+
+
   // using SendGrid's v3 Node.js Library
   // https://github.com/sendgrid/sendgrid-nodejs
   
