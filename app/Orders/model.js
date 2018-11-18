@@ -21,7 +21,7 @@ const Orders = new mongoose.Schema({
   status: {
     type: String,
     enum: ['seleccionado', 'pedido', 'enviado', 'recibido'],
-    default: 'selecionado',
+    default: 'seleccionado',
   },
   timestampCreated:{
     type: String,

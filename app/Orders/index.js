@@ -6,7 +6,7 @@ module.exports = function (passport) {
   Router
     .post(
       '/',
-   //   passport.authenticate('jwt', { session: false }),
+      passport.authenticate('jwt', { session: false }),
    //   Authorization.roleAuthorization(['user']),
       OrderController.createOrder
     );
@@ -14,7 +14,7 @@ module.exports = function (passport) {
   Router
     .get(
       '/',
-   //   passport.authenticate('jwt', { session: false }),
+      passport.authenticate('jwt', { session: false }),
     //  Authorization.roleAuthorization(['user']),
       OrderController.getOrderByUserOrRestaurant
     );
@@ -22,7 +22,7 @@ module.exports = function (passport) {
   Router
     .patch(
       '/:orderId',
-   //   passport.authenticate('jwt', { session: false }),
+      passport.authenticate('jwt', { session: false }),
     //  Authorization.roleAuthorization(['user']),
       OrderController.updateOrderById
     );

@@ -28,13 +28,18 @@ var UserSchema = new Schema({
     type: String,
     required: false,
   },
-  fullName: {
+  name: {
     type: String,
     required: false,
   },
   age: {
     type: String,
     required: false,
+  },
+  description: {
+    type: String,
+    required: false,
+    default: '',
   }
 });
 

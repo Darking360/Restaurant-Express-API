@@ -2,12 +2,16 @@ const User = require('./model');
 const crypto = require('../utils/crypto');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
+const Restaurant = require('../Restaurant/model');
 
 const register = function (req, res, next) {
   const {
     email,
     password,
     role,
+    address,
+    name,
+    description,
   } = req.body;
 
   const hashedPassword = crypto.encrypt(password);
@@ -16,11 +20,24 @@ const register = function (req, res, next) {
     email,
     password: hashedPassword,
     role,
+    address,
+    name,
+    description    
   });
 
   user
     .save()
     .then((user) => {
+
+      const restaurant = new Restaurant({
+        name: name,
+        details: description,
+        _id: user._id,
+      });
+
+      restaurant
+        .save()
+
       res.json({
         user,
         success: true,
