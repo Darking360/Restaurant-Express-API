@@ -66,8 +66,10 @@ const getOrderByUserOrRestaurant = function (req, res, next) {
       .find({
           userId,
       })
+     .populate('items.food')
       .exec()
       .then((orders) => {
+        console.log(orders.map( order => order.items))
         res.json({
           orders
         });

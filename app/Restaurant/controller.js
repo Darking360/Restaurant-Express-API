@@ -24,6 +24,7 @@ const getRestaurantsByType = function (req, res, next) {
           rests.push(pick(restaurant, ['_id', 'name', 'details', 'foods']))
         }
       })
+      console.log(rests)
       res.json(rests)
     })
     .catch(e => next(e));
@@ -59,7 +60,10 @@ const getAllRestaurants = function (req, res, next) {
       .find()
       .populate('foods.food')
       .exec()
-      .then(restaurants => res.json(restaurants))
+      .then(restaurants => {
+        console.log(restaurants)
+        res.json(restaurants)
+      })
       .catch(e => next(e));
   }
 };
