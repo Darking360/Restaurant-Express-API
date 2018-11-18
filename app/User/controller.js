@@ -93,6 +93,9 @@ const login = function (passport) {
 const updateUserById = function (req, res, next) {
   const { userId } = req.user;
 
+  console.log('Usuario es ---->')
+  console.log(userId)
+
   User
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
