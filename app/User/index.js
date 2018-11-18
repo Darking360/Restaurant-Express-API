@@ -1,5 +1,6 @@
 var Router = require('express').Router();
 var UserController = require('./controller');
+const Authorization = require('../utils/roleAuthorization');
 
 module.exports = function (passport) {
 
