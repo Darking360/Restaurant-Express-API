@@ -1,31 +1,62 @@
 const User = require('./model');
 const crypto = require('../utils/crypto');
 const jwt = require('jsonwebtoken');
+const sgMail = require('@sendgrid/mail');
+const Restaurant = require('../Restaurant/model');
 
 const register = function (req, res, next) {
   const {
     email,
     password,
     role,
+    address,
+    name,
+    description,
   } = req.body;
 
   const hashedPassword = crypto.encrypt(password);
-
-  const user = new User({
-    email,
-    password: hashedPassword,
-    role,
-  });
-
-  user
-    .save()
-    .then((user) => {
-      res.json({
-        user,
-        success: true,
+  User.findOne({ email })
+  .exec()
+  .then( user => {
+    if(user){
+      res.status(400).json({
+        message: "Email ya existe. Si olvido contraseña, seleccione opcion para recuperarla",
+        success: false,
+      })
+    }
+    else{
+      const newUser = new User({
+        email,
+        password: hashedPassword,
+        role,
+        address,
+        name,
+        description
       });
-    })
-    .catch(e => next(e));
+      newUser
+        .save()
+        .then((user) => {
+
+          if(user.role === 'restaurant'){
+            const restaurant = new Restaurant({
+              name: name,
+              details: description,
+              _id: user._id,
+            });
+
+            restaurant
+              .save()
+          }
+
+          res.json({
+            user,
+            success: true,
+          });
+        })
+        .catch(e => next(e));
+    }
+  })
+
 };
 
 const getUsers = function (req, res, next) {
@@ -91,16 +122,87 @@ const login = function (passport) {
 };
 
 const updateUserById = function (req, res, next) {
-  const { userId } = req.user;
-
-  console.log('Usuario es ---->')
-  console.log(userId)
-
-  User
+  const { _id: userId } = req.user;
+  let { password, password } = req.body;
+  console.log(req.body)
+  let existingUser = null;
+  if(email){
+    User.findOne({ email })
+    .exec()
+    .then( user => {
+      if(!user){
+        existingUser = user;
+        if(password){
+          password = crypto.encrypt(password);
+          req.body.password = password;
+        }
+        User
+        .findByIdAndUpdate(userId, req.body, {new: true})
+        .exec()
+        .then(user => res.json(user))
+        .catch(err => next(err));
+        }
+      else{
+        res.status(400).json({
+          message: 'No se puede cambiar al email seleccionado, debido a que ya existe',
+          success: false,
+        })
+      }
+    })
+  }
+  else{
+    if(password){
+      password = crypto.encrypt(password);
+      req.body.password = password;
+    }
+    User
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
     .then(user => res.json(user))
     .catch(err => next(err));
+  }
+
+};
+
+
+const recoverPsw  = function (req, res, next) {
+  const {
+    email
+  } = req.query;
+  let newPassword = "123456"
+  User.findOne({email})
+  .exec()
+  .then( user => {
+    console.log(user)
+    if(user){
+      user.password = crypto.encrypt(newPassword);
+      user.save()
+      .then( updatedUser => {
+        sgMail.setApiKey('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');
+        const msg = {
+          to: email,
+          from: 'psw@order.com',
+          subject: 'Nueva contraseña',
+          text: 'Su nueva contraseña es ' + newPassword + '',
+          html: '<strong>Su nueva contraseña es ' + newPassword + ', por favor cambiela lo antes posible</strong>',
+        };
+        sgMail.send(msg);
+        return res.json({
+          success: true,
+        });
+      });
+    }
+    else{
+      res.status(400).json({
+        success: false,
+        message: "Email no se encuentra registrado"
+      })
+    }
+  })
+
+
+  // using SendGrid's v3 Node.js Library
+  // https://github.com/sendgrid/sendgrid-nodejs
 
 };
 
@@ -109,5 +211,6 @@ module.exports = {
   getUsers,
   deleteUserById,
   login,
-  updateUserById
+  updateUserById,
+  recoverPsw
 };
