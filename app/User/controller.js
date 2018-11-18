@@ -91,9 +91,7 @@ const login = function (passport) {
 };
 
 const updateUserById = function (req, res, next) {
-  const {
-    userId,
-  } = req.params;
+  const { userId } = req.user;
 
   User
     .findByIdAndUpdate(userId, req.body, {new: true})
