@@ -1,5 +1,6 @@
 var Router = require('express').Router();
 var UserController = require('./controller');
+const Authorization = require('../utils/roleAuthorization');
 
 module.exports = function (passport) {
 
@@ -11,9 +12,9 @@ module.exports = function (passport) {
 
   Router.post('/login', UserController.login(passport));
 
-  Router.patch('/update/:userId',
-    //passport.authenticate('jwt', { session: false }),
-    // Authorization.roleAuthorization(['admin']),
+  Router.patch('/update/',
+    passport.authenticate('jwt', { session: false }),
+     Authorization.roleAuthorization(['user', 'restaurant']),
     UserController.updateUserById
   );
 

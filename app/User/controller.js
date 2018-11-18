@@ -92,8 +92,11 @@ const login = function (passport) {
 };
 
 const updateUserById = function (req, res, next) {
-  const { userId } = req.params;
-
+  const { _id: userId } = req.user;
+  let { password } = req.body;
+  password = crypto.encrypt(password);
+  console.log(req.body)
+  req.body.password = password;
   User
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
