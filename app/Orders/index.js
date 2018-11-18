@@ -6,8 +6,8 @@ module.exports = function (passport) {
   Router
     .post(
       '/',
-   //   passport.authenticate('jwt', { session: false }),
-   //   Authorization.roleAuthorization(['user']),
+      passport.authenticate('jwt', { session: false }),
+      Authorization.roleAuthorization(['user']),
       OrderController.createOrder
     );
 
