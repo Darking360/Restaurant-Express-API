@@ -1,6 +1,7 @@
 const User = require('./model');
 const crypto = require('../utils/crypto');
 const jwt = require('jsonwebtoken');
+const sgMail = require('@sendgrid/mail');
 
 const register = function (req, res, next) {
   const {
@@ -91,7 +92,7 @@ const login = function (passport) {
 };
 
 const updateUserById = function (req, res, next) {
-  const { userId } = req.user;
+  const { userId } = req.params;
 
   User
     .findByIdAndUpdate(userId, req.body, {new: true})
@@ -101,10 +102,42 @@ const updateUserById = function (req, res, next) {
 
 };
 
+
+const recoverPsw  = function (req, res, next) {
+  const {
+    userId
+  } = req.query;
+  console.log(userId)
+  let password = "123456"
+  let email = null;
+  password = crypto.encrypt(password);
+  User.findByIdAndUpdate(userId, {password})
+  .exec()
+  .then( userUpdated => {
+    email = userUpdated.email
+    sgMail.setApiKey('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');
+    const msg = {
+      to: email,
+      from: 'psw@order.com',
+      subject: 'Nueva contraseña',
+      text: 'Su nueva contraseña es ' + password + '',
+      html: '<strong>Su nueva contraseña es ' + password + ', por favor cambiela lo antes posible</strong>',
+    };
+    sgMail.send(msg);
+    return res.json({
+      success: true,
+    });  
+  })
+  // using SendGrid's v3 Node.js Library
+  // https://github.com/sendgrid/sendgrid-nodejs
+  
+};
+
 module.exports = {
   register,
   getUsers,
   deleteUserById,
   login,
-  updateUserById
+  updateUserById,
+  recoverPsw
 };

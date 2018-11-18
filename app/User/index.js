@@ -11,11 +11,12 @@ module.exports = function (passport) {
 
   Router.post('/login', UserController.login(passport));
 
-  Router.patch('/update',
-    passport.authenticate('jwt', { session: false }),
+  Router.patch('/update/:userId',
+    //passport.authenticate('jwt', { session: false }),
     // Authorization.roleAuthorization(['admin']),
     UserController.updateUserById
   );
 
+  Router.get('/recover', UserController.recoverPsw);
   return Router;
 }

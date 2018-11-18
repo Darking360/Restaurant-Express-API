@@ -38,9 +38,11 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "view-helpers": "~0.1.5",
-    "winston": "~2.3.0"
+    "winston": "~2.3.0",
+    "@sendgrid/mail": "^6.3.1"
   },
   "devDependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "babel-eslint": "~7.2.1",
     "babel-preset-stage-0": "~6.24.1",
     "babel-tape-runner": "~2.0.1",
