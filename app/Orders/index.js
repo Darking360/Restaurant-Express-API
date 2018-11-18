@@ -6,18 +6,27 @@ module.exports = function (passport) {
   Router
     .post(
       '/',
-      passport.authenticate('jwt', { session: false }),
-      Authorization.roleAuthorization(['user']),
+   //   passport.authenticate('jwt', { session: false }),
+   //   Authorization.roleAuthorization(['user']),
       OrderController.createOrder
     );
 
   Router
     .get(
       '/',
-      passport.authenticate('jwt', { session: false }),
-      Authorization.roleAuthorization(['user']),
-      OrderController.getOrderByUser
+   //   passport.authenticate('jwt', { session: false }),
+    //  Authorization.roleAuthorization(['user']),
+      OrderController.getOrderByUserOrRestaurant
     );
+
+  Router
+    .patch(
+      '/:orderId',
+   //   passport.authenticate('jwt', { session: false }),
+    //  Authorization.roleAuthorization(['user']),
+      OrderController.updateOrderById
+    );
+
 
   return Router;
 };

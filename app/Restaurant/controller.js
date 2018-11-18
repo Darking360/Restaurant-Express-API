@@ -1,4 +1,5 @@
 const Restaurant = require('./model');
+const Food = require('../Food/model');
 const filter = require('lodash/filter');
 const findIndex = require('lodash/findIndex');
 const pick = require('lodash/pick');
@@ -16,7 +17,14 @@ const getRestaurantsByType = function (req, res, next) {
     .exec()
     .then(restaurants => {
       // returns all restaurants id, name and details
-      res.json(map(restaurants, restaurant => pick(restaurant, ['_id', 'name', 'details', 'foods'])));
+      let rests = [];
+      restaurants.forEach( restaurant => {
+        const food = restaurant.foods.find( food => food._doc.type === type )
+        if(food){
+          rests.push(pick(restaurant, ['_id', 'name', 'details', 'foods']))
+        }
+      })
+      res.json(rests)
     })
     .catch(e => next(e));
 };
@@ -25,6 +33,7 @@ const getRestaurantsByType = function (req, res, next) {
 const getAllRestaurants = function (req, res, next) {
   const {
     id,
+    name,
   } = req.query;
   
   if (id) {
@@ -34,7 +43,18 @@ const getAllRestaurants = function (req, res, next) {
       .exec()
       .then(restaurants => res.json(restaurants))
       .catch(e => next(e));
-  } else {
+  }
+  else if(name){
+    Restaurant
+      .find({
+        name:{'$regex' : name, '$options' : 'i'}
+      })
+      .populate('foods.food')
+      .exec()
+      .then(restaurants => res.json(restaurants))
+      .catch(e => next(e));
+  }
+   else {
     Restaurant
       .find()
       .populate('foods.food')
@@ -49,12 +69,27 @@ const createRestaurant = function (req, res, next) {
   const {
     name,
     details,
+    foods
   } = req.body;
+
+  let newFoods = [];
+  if(foods){
+    foods.forEach( food => {
+      let newFood = {};
+      const { type, name } = food;
+      newFood = new Food({
+          name,
+          type,
+      });
+      newFoods = newFoods.concat(newFood);
+      newFood.save();
+    })
+  }
 
   const restaurant = new Restaurant({
     name,
     details,
-    foods: [],
+    foods: foods ? newFoods : [],
   });
 
   restaurant
@@ -67,7 +102,7 @@ const createRestaurant = function (req, res, next) {
 const deleteRestaurant = function (req, res, next) {
   const {
     id,
-  } = req.body;
+  } = req.params;
 
   Restaurant
     .findByIdAndRemove(id)
@@ -81,13 +116,23 @@ const addFoodToRestaurant = function (req, res, next) {
   const {
     restaurantId,
     foodId,
+    food,
     price,
   } = req.body;
+  let newFood = {};
+  if(food){
+    const { type, name } = food;
+    newFood = new Food({
+      name,
+      type,
+    });
+    newFood.save();
+  }
   Restaurant
     .findByIdAndUpdate(restaurantId, {
       $push: {
         foods: {
-          food: foodId,
+          food: food ? newFood.id : foodId,
           price,
           active: false,
         }
@@ -100,10 +145,24 @@ const addFoodToRestaurant = function (req, res, next) {
   
 };
 
+const updateRestaurantById = function (req, res, next) {
+  const {
+    restaurantId,
+  } = req.params;
+
+  Restaurant
+    .findByIdAndUpdate(restaurantId, req.body, {new: true})
+    .exec()
+    .then(restaurant => res.json(restaurant))
+    .catch(err => next(err));
+
+};
+
 module.exports = {
   createRestaurant,
   getAllRestaurants,
   getRestaurantsByType,
   deleteRestaurant,
   addFoodToRestaurant,
+  updateRestaurantById,
 };

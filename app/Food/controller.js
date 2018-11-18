@@ -67,7 +67,7 @@ const updateFoodById = function (req, res, next) {
   } = req.params;
 
   Food
-    .findByIdAndUpdate(foodId, req.body)
+    .findByIdAndUpdate(foodId, req.body, {new: true})
     .exec()
     .then(food => res.json(food))
     .catch(err => next(err));

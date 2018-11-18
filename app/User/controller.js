@@ -6,7 +6,7 @@ const register = function (req, res, next) {
   const {
     email,
     password,
-    admin,
+    role,
   } = req.body;
 
   const hashedPassword = crypto.encrypt(password);
@@ -14,12 +14,12 @@ const register = function (req, res, next) {
   const user = new User({
     email,
     password: hashedPassword,
-    role: admin ? 'admin' : 'user',
+    role,
   });
-  
+
   user
     .save()
-    .then((user) => { 
+    .then((user) => {
       res.json({
         user,
         success: true,
@@ -78,15 +78,29 @@ const login = function (passport) {
         }
         // Provide data since user is not a proper serialized object
         const token = jwt.sign(user.toObject(), 'secret_restaurant_app');
-          
         return res.json({
           success: true,
+          role: user.role,
           token,
+          user: user.toObject(),
         });
       });
     })(req, res);
   };
-  
+
+};
+
+const updateUserById = function (req, res, next) {
+  const {
+    userId,
+  } = req.params;
+
+  User
+    .findByIdAndUpdate(userId, req.body, {new: true})
+    .exec()
+    .then(user => res.json(user))
+    .catch(err => next(err));
+
 };
 
 module.exports = {
@@ -94,4 +108,5 @@ module.exports = {
   getUsers,
   deleteUserById,
   login,
+  updateUserById
 };

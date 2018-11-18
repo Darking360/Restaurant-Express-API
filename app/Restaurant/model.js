@@ -19,8 +19,14 @@ const Restaurant = new mongoose.Schema({
     },
     active: {
       type: Boolean,
+      default: true
     },
-  }]
+  }],
+  active: {
+    type: Boolean,
+    default: false,  
+  }
+
 });
 
 module.exports = mongoose.model('Restaurant', Restaurant);

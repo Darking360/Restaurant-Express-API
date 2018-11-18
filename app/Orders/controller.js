@@ -24,14 +24,19 @@ const createOrder = function (req, res, next) {
     });
 };
 
-const getOrderByUser = function (req, res, next) {
+const getOrderByUserOrRestaurant = function (req, res, next) {
   const {
-    userId,
+    restaurantId,
+    status
   } = req.query;
 
-  Order
+  const { _id: userId } = req.user;
+
+  if(userId && restaurantId){
+    Order
     .find({
-      userId,
+        userId,
+        restaurantId,
     })
     .exec()
     .then((orders) => {
@@ -40,9 +45,84 @@ const getOrderByUser = function (req, res, next) {
       });
     })
     .catch(e => next(e));
+  }
+  else if(userId){
+    if(status){
+      Order
+      .find({
+          userId,
+          status
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+    else{
+      Order
+      .find({
+          userId,
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+  }
+  else if(restaurantId){
+    if(status){
+      Order
+      .find({
+          restaurantId,
+          status
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+    else{
+      Order
+      .find({
+          restaurantId,
+      })
+      .exec()
+      .then((orders) => {
+        res.json({
+          orders
+        });
+      })
+      .catch(e => next(e));
+    }
+  }
+
+};
+
+
+const updateOrderById = function (req, res, next) {
+  const {
+    orderId,
+  } = req.params;
+  const body = Object.assign({timestampUpdated: new Date()}, req.body);
+  Order
+    .findByIdAndUpdate(orderId, body, {new: true})
+    .exec()
+    .then(order => res.json(order))
+    .catch(err => next(err));
+
 };
 
 module.exports = {
   createOrder,
-  getOrderByUser,
+  getOrderByUserOrRestaurant,
+  updateOrderById
 };

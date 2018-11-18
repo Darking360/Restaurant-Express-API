@@ -25,7 +25,7 @@ module.exports = function (passport) {
   );
 
   /* Delete a restaurant */
-  Router.delete('/',
+  Router.delete('/:id',
     // passport.authenticate('jwt', { session: false }),
     // Authorization.roleAuthorization(['admin']),
     RestaurantController.deleteRestaurant
@@ -36,6 +36,12 @@ module.exports = function (passport) {
     // passport.authenticate('jwt', { session: false }),
     // Authorization.roleAuthorization(['admin']),
     RestaurantController.addFoodToRestaurant
+  );
+
+  Router.patch('/:restaurantId',
+    // passport.authenticate('jwt', { session: false }),
+    // Authorization.roleAuthorization(['admin']),
+    RestaurantController.updateRestaurantById
   );
 
   /* Changes a food in a restaurant to the given state (In stock or Out of stock) */

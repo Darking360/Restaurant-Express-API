@@ -6,13 +6,29 @@ const Orders = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  items: {
-    type: 'Array',
-    require: true,
-  },
+  items: [
+          {
+            foodId : {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'Food',
+            },
+          }
+        ],
   totalCost: {
     type: Number,
     required: true,
+  },
+  status: {
+    type: String,
+    enum: ['seleccionado', 'pedido', 'enviado', 'recibido'],
+    default: 'selecionado',
+  },
+  timestampCreated:{
+    type: String,
+    default: new Date()
+  },
+  timestampUpdated:{
+    type: String,
   }
 });
 
