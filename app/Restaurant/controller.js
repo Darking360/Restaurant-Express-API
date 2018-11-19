@@ -189,4 +189,5 @@ module.exports = {
   addFoodToRestaurant,
   updateRestaurantById,
   search,
+  mine,
 };
