@@ -140,7 +140,13 @@ const updateUserById = function (req, res, next) {
         User
         .findByIdAndUpdate(userId, req.body, {new: true})
         .exec()
-        .then(user => res.json(user))
+        .then(user => {
+          if(user.role === 'restaurant'){
+            Restaurant.findByIdAndUpdate(user._id, req.body)
+            .exec()
+          }
+          res.json(user)
+        })
         .catch(err => next(err));
         }
       else{
@@ -156,10 +162,17 @@ const updateUserById = function (req, res, next) {
       password = crypto.encrypt(password);
       req.body.password = password;
     }
+
     User
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
-    .then(user => res.json(user))
+    .then(user => {
+      if(user.role === 'restaurant'){
+        Restaurant.findByIdAndUpdate(user._id, req.body)
+        .exec()
+      }
+      res.json(user);
+    })
     .catch(err => next(err));
   }
 
