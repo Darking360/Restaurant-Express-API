@@ -141,7 +141,7 @@ const updateUserById = function (req, res, next) {
         .findByIdAndUpdate(userId, req.body, {new: true})
         .exec()
         .then(user => {
-          if(user.role === 'restaurant'){
+          if(user && user.role === 'restaurant'){
             Restaurant.findByIdAndUpdate(user._id, req.body)
             .exec()
           }
@@ -167,7 +167,7 @@ const updateUserById = function (req, res, next) {
     .findByIdAndUpdate(userId, req.body, {new: true})
     .exec()
     .then(user => {
-      if(user.role === 'restaurant'){
+      if(user && user.role === 'restaurant'){
         Restaurant.findByIdAndUpdate(user._id, req.body)
         .exec()
       }
