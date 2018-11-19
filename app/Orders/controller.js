@@ -10,10 +10,12 @@ const createOrder = function (req, res, next) {
 
   const order = new Order({
     userId,
-    items,
+    items: items.map( item => ({...item, food: item.id}) ),
     totalCost
   });
-
+  items.map( item => console.log(item))
+  console.log('-----------')
+  order.items.map( item => console.log(item))
   order
     .save()
     .then(order => {
@@ -27,10 +29,11 @@ const createOrder = function (req, res, next) {
 const getOrderByUserOrRestaurant = function (req, res, next) {
   const {
     restaurantId,
-    status
+    status,
+  //  userId
   } = req.query;
 
-  const { _id: userId } = req.user;
+  let { _id: userId } = req.user;
 
   if(userId && restaurantId){
     Order
@@ -38,6 +41,7 @@ const getOrderByUserOrRestaurant = function (req, res, next) {
         userId,
         restaurantId,
     })
+     .populate('items.food')
     .exec()
     .then((orders) => {
       res.json({
@@ -53,6 +57,7 @@ const getOrderByUserOrRestaurant = function (req, res, next) {
           userId,
           status
       })
+     .populate('items.food')
       .exec()
       .then((orders) => {
         res.json({
@@ -66,8 +71,10 @@ const getOrderByUserOrRestaurant = function (req, res, next) {
       .find({
           userId,
       })
+     .populate('items.food')
       .exec()
       .then((orders) => {
+        console.log(orders.map( order => order.items))
         res.json({
           orders
         });

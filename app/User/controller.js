@@ -99,7 +99,7 @@ const login = function (passport) {
     passport.authenticate('local', { session: false }, (err, user, info) => {
       if (err || !user) {
         return res.status(400).json({
-          message: 'User Id or Password is wrong',
+          message: 'Usuario o contraseña erroneas',
           user   : user
         });
       }

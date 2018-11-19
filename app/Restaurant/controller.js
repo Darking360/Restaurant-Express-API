@@ -24,6 +24,7 @@ const getRestaurantsByType = function (req, res, next) {
           rests.push(pick(restaurant, ['_id', 'name', 'details', 'foods']))
         }
       })
+      console.log(restaurants)
       res.json(rests)
     })
     .catch(e => next(e));
@@ -59,7 +60,10 @@ const getAllRestaurants = function (req, res, next) {
       .find()
       .populate('foods.food')
       .exec()
-      .then(restaurants => res.json(restaurants))
+      .then(restaurants => {
+        console.log(restaurants)
+        res.json(restaurants)
+      })
       .catch(e => next(e));
   }
 };
@@ -128,20 +132,22 @@ const addFoodToRestaurant = function (req, res, next) {
     });
     newFood.save();
   }
-  Restaurant
-    .findByIdAndUpdate(restaurantId, {
-      $push: {
-        foods: {
-          food: food ? newFood.id : foodId,
-          price,
-          active: false,
-        }
-      },
-      
-    })
-    .exec()
-    .then(restaurant => res.json(restaurant))
-    .catch(e => next(e));
+  else{
+    Restaurant
+      .findByIdAndUpdate(restaurantId, {
+        $push: {
+          foods: {
+            food: food ? newFood.id : foodId,
+            price,
+            active: false,
+          }
+        },
+        
+      })
+      .exec()
+      .then(restaurant => res.json(restaurant))
+      .catch(e => next(e));
+  }
   
 };
 
