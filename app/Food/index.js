@@ -44,7 +44,5 @@ module.exports = function (passport) {
     FoodController.search
   );
 
-  
-
   return router;
 };

@@ -52,7 +52,7 @@ module.exports = function (passport) {
 
   Router.get('/mine',
     passport.authenticate('jwt', { session: false }),
-    Authorization.roleAuthorization(['user', 'restaurant']),
+    Authorization.roleAuthorization(['user']),
     RestaurantController.mine
   );
 
