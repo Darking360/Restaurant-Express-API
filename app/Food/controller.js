@@ -24,6 +24,7 @@ const createFood = function (req, res, next) {
 const getAllFood = function (req, res, next) {
   const {
     id,
+    name,
   } = req.query;
 
   // If id is present get Particular item
@@ -34,6 +35,15 @@ const getAllFood = function (req, res, next) {
       .then(food => res.json(food))
       .catch(err => next(err));
 
+  } else if (name) {
+    Food
+      .find({
+        name:{'$regex' : name, '$options' : 'i'}
+      })
+      .populate('restaurant')
+      .exec()
+      .then(foods => res.json(foods))
+      .catch(e => next(e));
   } else {
   // If no id then get all
     Food
