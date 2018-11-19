@@ -40,7 +40,11 @@ const getAllFood = function (req, res, next) {
       .find({
         name:{'$regex' : name, '$options' : 'i'}
       })
-      .populate('restaurant')
+      .populate({
+        path: 'restaurant',
+        // Get friends of friends - populate the 'friends' array for every friend
+        populate: { path: 'foods.food' }
+      })
       .exec()
       .then(foods => res.json(foods))
       .catch(e => next(e));
