@@ -9,6 +9,10 @@ const Food = new mongoose.Schema({
     require: true,
     type: String,
   },
+  restaurant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Restaurant',
+  }
 });
 
 module.exports = mongoose.model('Food', Food);

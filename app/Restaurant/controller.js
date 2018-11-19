@@ -113,6 +113,19 @@ const deleteRestaurant = function (req, res, next) {
 
 };
 
+const search = function (req, res, next) {
+  const {
+    search,
+  } = req.query;
+
+  Restaurant
+    .find({name: new RegExp('^'+search+'$', "i")})
+    .populate('foods.food')
+    .then((restaurants) => res.json({ data: restaurants }))
+    .catch(e => res.status(400).json({ messgae: 'Error buscando restaurantes' }));
+
+};
+
 // Adds a food to restaurant and creates a link to Food Model
 const addFoodToRestaurant = function (req, res, next) {
   const {
@@ -169,4 +182,5 @@ module.exports = {
   deleteRestaurant,
   addFoodToRestaurant,
   updateRestaurantById,
+  search,
 };

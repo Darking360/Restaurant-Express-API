@@ -44,6 +44,12 @@ module.exports = function (passport) {
     RestaurantController.updateRestaurantById
   );
 
+  Router.get('/search',
+    // passport.authenticate('jwt', { session: false }),
+    // Authorization.roleAuthorization(['admin']),
+    RestaurantController.search
+  );
+
   /* Changes a food in a restaurant to the given state (In stock or Out of stock) */
 
   return Router;

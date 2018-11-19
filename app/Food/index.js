@@ -38,5 +38,13 @@ module.exports = function (passport) {
     FoodController.getFoodType
   );
 
+  router.get('/search',
+    // passport.authenticate('jwt', { session: false }),
+    // Authorization.roleAuthorization(['user']),
+    FoodController.search
+  );
+
+  
+
   return router;
 };

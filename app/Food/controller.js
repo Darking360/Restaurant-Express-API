@@ -1,8 +1,9 @@
 const Food = require('./model');
+const Restaurant = require('../Restaurant/model');
 
-// Creates a food 
+// Creates a food
 const createFood = function (req, res, next) {
-  
+
   const {
     name,
     type
@@ -57,7 +58,7 @@ const deleteFoodById = function (req, res, next) {
       success: true,
     }))
     .catch(err => next(err));
-    
+
 };
 
 // Updates Food By id
@@ -83,10 +84,26 @@ const getFoodType = function (req, res, next) {
     .catch(err => next(err));
 };
 
+const search = function (req, res, next) {
+  const {
+    search,
+  } = req.query;
+
+  Food
+    .find({name: new RegExp('^'+search+'$', "i")})
+    .populate('restaurant')
+    .then((foods) => {
+      res.json({ data: foods })
+    })
+    .catch(e => res.status(400).json({ messgae: 'Error buscando restaurantes' }));
+
+};
+
 module.exports = {
   createFood,
   getAllFood,
   deleteFoodById,
   updateFoodById,
   getFoodType,
+  search,
 };
