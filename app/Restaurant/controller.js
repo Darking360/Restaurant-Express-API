@@ -173,14 +173,10 @@ const mine = function (req, res, next) {
     _id,
   } = req.user;
 
-  console.log('Plij ----->')
-  console.log(_id)
-  console.log(req.user)
-
   Restaurant
     .findById(_id)
     .populate('foods.food')
-    .then(restaurant => res.json(restaurant.foods))
+    .then(restaurant => res.json(restaurant))
     .catch(err => next(err));
 
 };
