@@ -21,7 +21,8 @@ const createFood = function (req, res, next) {
     .save()
     .then(food => {
       Restaurant.findById(_id).then((restaurant) => {
-        restaurant.foods.push({ food: food._id, price }).then(() => {
+        restaurant.foods.push({ food: food._id, price });
+        restaurant.save().then(() => {
           res.json(food);
         });
       });
