@@ -3,6 +3,8 @@ const findIndex = require('lodash/findIndex');
 
 const roleAuthorization = function (roles) {
   return function (req, res, next) {
+    console.log('Tengo en el rollout ---->')
+    console.log(req.user)
     const userId = req.user._id;
     User
       .findById(userId)
@@ -30,5 +32,3 @@ const roleAuthorization = function (roles) {
 module.exports = {
   roleAuthorization,
 };
-
-
