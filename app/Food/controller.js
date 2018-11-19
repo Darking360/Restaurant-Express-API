@@ -6,18 +6,26 @@ const createFood = function (req, res, next) {
 
   const {
     name,
-    type
+    price,
+    type,
   } = req.body;
+
+  const { _id } = req.user;
 
   const food = new Food({
     name,
     type,
   });
 
-  // TODO: This should trigger restaurant's type
   food
     .save()
-    .then(food => res.json(food))
+    .then(food => {
+      Restaurant.findById(_id).then((restaurant) => {
+        restaurant.foods.push({ food: food._id, price }).then(() => {
+          res.json(food);
+        });
+      });
+    })
     .catch(err => next(err));
 };
 
