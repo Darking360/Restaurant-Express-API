@@ -33,6 +33,7 @@ const getAllFood = function (req, res, next) {
       .exec()
       .then(food => res.json(food))
       .catch(err => next(err));
+
   } else {
   // If no id then get all
     Food
@@ -93,7 +94,7 @@ const search = function (req, res, next) {
     .find({name: new RegExp('^'+search+'$', "i")})
     .populate('restaurant')
     .then((foods) => {
-      res.json({ data: foods })
+      res.json(foods)
     })
     .catch(e => res.status(400).json({ messgae: 'Error buscando restaurantes' }));
 
