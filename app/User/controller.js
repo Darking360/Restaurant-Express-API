@@ -124,7 +124,6 @@ const login = function (passport) {
 const updateUserById = function (req, res, next) {
   const { _id: userId } = req.user;
   let { password, password } = req.body;
-  console.log(req.body)
   let existingUser = null;
   if(email){
     User.findOne({ email })
@@ -173,7 +172,6 @@ const recoverPsw  = function (req, res, next) {
   User.findOne({email})
   .exec()
   .then( user => {
-    console.log(user)
     if(user){
       user.password = crypto.encrypt(newPassword);
       user.save()

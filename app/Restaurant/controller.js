@@ -10,7 +10,7 @@ const getRestaurantsByType = function (req, res, next) {
   const {
     type,
   } = req.query;
-  
+
   Restaurant
     .find()
     .populate('foods.food')
@@ -24,7 +24,6 @@ const getRestaurantsByType = function (req, res, next) {
           rests.push(pick(restaurant, ['_id', 'name', 'details', 'foods']))
         }
       })
-      console.log(restaurants)
       res.json(rests)
     })
     .catch(e => next(e));
@@ -36,7 +35,7 @@ const getAllRestaurants = function (req, res, next) {
     id,
     name,
   } = req.query;
-  
+
   if (id) {
     Restaurant
       .findById(id)
@@ -61,14 +60,13 @@ const getAllRestaurants = function (req, res, next) {
       .populate('foods.food')
       .exec()
       .then(restaurants => {
-        console.log(restaurants)
         res.json(restaurants)
       })
       .catch(e => next(e));
   }
 };
 
-// Creates a new restaurant 
+// Creates a new restaurant
 const createRestaurant = function (req, res, next) {
   const {
     name,
@@ -112,7 +110,7 @@ const deleteRestaurant = function (req, res, next) {
     .findByIdAndRemove(id)
     .then(() => res.json({ success: true }))
     .catch(e => next(e));
-  
+
 };
 
 // Adds a food to restaurant and creates a link to Food Model
@@ -142,13 +140,13 @@ const addFoodToRestaurant = function (req, res, next) {
             active: false,
           }
         },
-        
+
       })
       .exec()
       .then(restaurant => res.json(restaurant))
       .catch(e => next(e));
   }
-  
+
 };
 
 const updateRestaurantById = function (req, res, next) {
