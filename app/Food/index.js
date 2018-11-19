@@ -12,8 +12,8 @@ module.exports = function (passport) {
 
   /* POST New food */
   router.post('/',
-    // passport.authenticate('jwt', { session: false }),
-    // Authorization.roleAuthorization(['admin']),
+    passport.authenticate('jwt', { session: false }),
+    Authorization.roleAuthorization(['restaurant']),
     FoodController.createFood
   );
 
