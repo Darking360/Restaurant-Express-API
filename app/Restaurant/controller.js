@@ -168,6 +168,19 @@ const updateRestaurantById = function (req, res, next) {
 
 };
 
+const mine = function (req, res, next) {
+  const {
+    _id,
+  } = req.user;
+
+  Restaurant
+    .findById(_id)
+    .populate('foods.food')
+    .then(restaurant => res.json(restaurant.foods))
+    .catch(err => next(err));
+
+};
+
 module.exports = {
   createRestaurant,
   getAllRestaurants,
