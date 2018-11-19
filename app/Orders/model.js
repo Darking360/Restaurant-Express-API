@@ -8,10 +8,16 @@ const Orders = new mongoose.Schema({
   },
   items: [
           {
-            foodId : {
+            food : {
               type: mongoose.Schema.Types.ObjectId,
               ref: 'Food',
             },
+            quantity: {
+              type: Number
+            },
+            price: {
+              type: Number
+            }
           }
         ],
   totalCost: {
