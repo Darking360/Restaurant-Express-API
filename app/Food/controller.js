@@ -78,9 +78,19 @@ const deleteFoodById = function (req, res, next) {
   Food
     .findByIdAndRemove(id)
     .exec()
-    .then(() => res.json({
-      success: true,
-    }))
+    .then((food) => {
+    
+      Restaurant.findOne({ "foods.food": id})
+      .exec()
+      .then( restaurant => {
+        restaurant.foods = restaurant.foods.filter( food => {
+          return food.food != id})
+        restaurant.save()
+      })
+      res.json({
+          success: true,
+      })
+    })
     .catch(err => next(err));
 
 };
